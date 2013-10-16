@@ -105,7 +105,7 @@
     template: _.template( $('#tmpl-results-table').html() ),
     initialize: function() {
       this.collection = new app.RecordCollection( app.mainView.results.data );
-      this.collection.on('reset', this.render, this);
+      this.listenTo(this.collection, 'reset', this.render);
       this.render();
     },
     render: function() {
@@ -189,7 +189,7 @@
     },
     initialize: function() {
       this.model = new app.Paging({ pages: app.mainView.results.pages, items: app.mainView.results.items });
-      this.listenTo(this.model, 'sync', this.render);
+      this.listenTo(this.model, 'change', this.render);
       this.render();
     },
     render: function() {
