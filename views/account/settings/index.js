@@ -32,8 +32,8 @@ var renderSettings = function(req, res, next, oauthMessage) {
     
     res.render('account/settings/index', {
       data: {
-        account: JSON.stringify(outcome.account),
-        user: JSON.stringify(outcome.user)
+        account: escape(JSON.stringify(outcome.account)),
+        user: escape(JSON.stringify(outcome.user))
       },
       oauthMessage: oauthMessage,
       oauthTwitter: !!req.app.get('twitter-oauth-key'),
@@ -257,7 +257,7 @@ exports.identity = function(req, res, next){
   });
   
   workflow.on('duplicateEmailCheck', function() {
-    req.app.db.models.User.findOne({ email: req.body.email, _id: { $ne: req.user.id } }, function(err, user) {
+    req.app.db.models.User.findOne({ email: req.body.email.toLowerCase(), _id: { $ne: req.user.id } }, function(err, user) {
       if (err) {
         return workflow.emit('exception', err);
       }
@@ -274,7 +274,7 @@ exports.identity = function(req, res, next){
   workflow.on('patchUser', function() {
     var fieldsToSet = {
       username: req.body.username,
-      email: req.body.email,
+      email: req.body.email.toLowerCase(),
       search: [
         req.body.username,
         req.body.email
